@@ -1,5 +1,5 @@
 # Projeto Banco de Dados: Minimundo - Drive
-**Atividades:**
+## **Atividades:**
 1. Fazer o modelo conceitual  
 2. Fazer o modelo lógico  
 3. Fazer o modelo físico com as seguintes funcionalidades:  
@@ -9,7 +9,7 @@
     - Atualizar  
     - Remover  
 
-**O Drive possui as seguintes características:**
+## **O Drive possui as seguintes características:**
 - Os usuários possuem arquivos, estes arquivos podem ser de mídias diversas;  
 - Um usuário deve ter um id, login, senha, data de ingresso e email;  
 - Arquivos possuem id, nome, tipo, permissões de acesso, tamanho, data de 
@@ -45,3 +45,10 @@ data, hora, operação, id do usuário que alterou o arquivo e conteúdo mudado
 (sempre em formato de texto). 
 - Um arquivo pode possuir um ou vários registros de versionamento, mas o 
 registro de versionamento só pode estar vinculado a um único arquivo.
+
+## **Integrantes**
+- Eduardo Braga
+- Henrique Franca
+- Isabela Medeiros
+- Júlia Vilar
+- Rafael Angelim
