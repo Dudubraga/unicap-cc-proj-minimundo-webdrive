@@ -43,3 +43,11 @@ CREATE TABLE arquivo(
     FOREIGN KEY(id) REFERENCES usuario(id)
 );
 
+CREATE TABLE comentario(
+    id INT AUTO_INCREMENT,
+    conteudo VARCHAR(200),
+    data_com DATE,
+    hora TIME,
+    FOREIGN KEY(id) REFERENCES usuario(id),
+    FOREIGN KEY(id) REFERENCES arquivo(id)
+);
