@@ -30,3 +30,16 @@ CREATE TABLE usuario(
     PRIMARY KEY(id),
     FOREIGN KEY(id_instituicao) REFERENCES instituicao(id)
 );
+
+
+CREATE TABLE arquivo(
+    id INT AUTO_INCREMENT,
+    localizacao INT,
+    data_modificacao DATE,
+    permissoes_acesso VARCHAR(50),
+    nome VARCHAR(70),
+    url VARCHAR(50),
+    tipo VARCHAR(50),
+    FOREIGN KEY(id) REFERENCES usuario(id)
+);
+
