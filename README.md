@@ -50,5 +50,5 @@ registro de versionamento só pode estar vinculado a um único arquivo.
 - Eduardo Braga
 - Henrique Franca
 - Isabela Medeiros
-- Júlia Vilar
+- Júlia Vilela
 - Rafael Angelim
