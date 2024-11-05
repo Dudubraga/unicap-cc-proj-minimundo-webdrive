@@ -1,0 +1,1 @@
+[(1, 'Joao2303', 'joao.lucas@gmail.com', 'joao123', None), (2, 'Felipezz', 'felipe@gmail.com', 'felipezz', None), (3, 'Carlos777', 'carlos.porto@gmail.com', 'carlinhos', None)]
