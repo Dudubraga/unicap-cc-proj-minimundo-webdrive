@@ -113,6 +113,15 @@ CREATE TABLE compartilhamento(
     FOREIGN KEY(id_arquivo) REFERENCES arquivo(id),
     FOREIGN KEY(id_usercompartilhado) REFERENCES usuario(id)
 );
+
+CREATE TABLE Atividades_recentes (
+    id_arquivo INT,
+    ultima_versao DATE,
+    acesso ENUM('prioritário', 'não prioritário') DEFAULT 'não prioritário',
+    PRIMARY KEY (id_arquivo),
+    FOREIGN KEY (id_arquivo) REFERENCES arquivo(id)
+);
+
     
 
 INSERT INTO administrador(id,login,email,senha,data_ingresso)VALUES(1,"Joao2303","joao.lucas@gmail.com","joao123", 23/03/2005);
