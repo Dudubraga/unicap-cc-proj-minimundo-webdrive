@@ -146,3 +146,15 @@ class DataBase:
             FOREIGN KEY (id_arquivo) REFERENCES arquivo(id)
         );
     """
+
+    createUser = """
+        CREATE USER IF NOT EXISTS 'usuario'@'localhost' IDENTIFIED BY 'user123';
+    """
+    createUserAdministrador = """
+        CREATE USER IF NOT EXISTS 'administrador'@'localhost' IDENTIFIED BY 'adm123';
+    """
+    createUserEmpresa = """
+        CREATE USER IF NOT EXISTS 'empresa'@'localhost' IDENTIFIED BY 'empresa123';
+    """
+
+    
