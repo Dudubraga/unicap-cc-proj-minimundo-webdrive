@@ -114,7 +114,7 @@ CREATE TABLE compartilhamento(
     FOREIGN KEY(id_usercompartilhado) REFERENCES usuario(id)
 );
 
-CREATE TABLE Atividades_recentes (
+CREATE TABLE atividades_recentes (
     id_arquivo INT,
     ultima_versao DATE,
     acesso ENUM('prioritário', 'não prioritário') DEFAULT 'não prioritário',
