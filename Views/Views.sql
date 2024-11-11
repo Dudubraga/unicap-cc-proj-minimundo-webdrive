@@ -23,8 +23,28 @@ id_usuario,
 id_arquivo
 FROM drive.historico WHERE id_usuario = 4;
 
-
-
 DROP VIEW usuarioArquivo;
+-- criando View para empresa visualizar seus usuarios
+CREATE VIEW empresaUsuarios AS
+SELECT
+login,
+email,
+data_ingresso
+FROM drive.usuario WHERE id_instituicao = 1;
+
+/*
 
 
+CREATE VIEW empresaArquivos AS
+SELECT
+nome,
+tipo,
+URL,
+Permissoes_acesso,
+localizacao,
+tamanho,
+data_modificacao,
+id_usuario
+FROM drive.arquivo WHERE id_usuario = (SELECT usuario.id FROM drive.usuario WHERE id_instituicao = 1);
+*/
+DROP VIEW empresaArquivos;
