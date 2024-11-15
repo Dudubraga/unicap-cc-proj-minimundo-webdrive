@@ -10,7 +10,7 @@ Permissoes_acesso,
 localizacao,
 tamanho,
 data_modificacao
-FROM drive.arquivo WHERE id_usuario = 4;
+FROM drive.arquivo WHERE id_usuario = 2;
 
 -- view para usuario ver o historico dele
 CREATE VIEW usuarioHistorico AS
@@ -21,7 +21,7 @@ hora,
 conteudo_alterado,
 id_usuario,
 id_arquivo
-FROM drive.historico WHERE id_usuario = 4;
+FROM drive.historico WHERE id_usuario = 2;
 
 DROP VIEW usuarioArquivo;
 -- criando View para empresa visualizar seus usuarios
@@ -32,9 +32,8 @@ email,
 data_ingresso
 FROM drive.usuario WHERE id_instituicao = 1;
 
-/*
 
-
+-- View para empresa visualizar todos os arquivos de cada usuario que esta ligado a empresa
 CREATE VIEW empresaArquivos AS
 SELECT
 nome,
@@ -45,6 +44,6 @@ localizacao,
 tamanho,
 data_modificacao,
 id_usuario
-FROM drive.arquivo WHERE id_usuario = (SELECT usuario.id FROM drive.usuario WHERE id_instituicao = 1);
-*/
+FROM drive.arquivo WHERE id_usuario IN (SELECT usuario.id FROM drive.usuario WHERE id_instituicao = 1);
+
 DROP VIEW empresaArquivos;
