@@ -114,7 +114,7 @@ CREATE TABLE compartilhamento(
     FOREIGN KEY(id_usercompartilhado) REFERENCES usuario(id)
 );
 
-CREATE TABLE atividades_recentes (
+CREATE TABLE Atividades_recentes (
     id_arquivo INT,
     ultima_versao DATE,
     acesso ENUM('prioritário', 'não prioritário') DEFAULT 'não prioritário',
@@ -122,7 +122,50 @@ CREATE TABLE atividades_recentes (
     FOREIGN KEY (id_arquivo) REFERENCES arquivo(id)
 );
 
+DELIMITER //
+
+CREATE TRIGGER Registrar_operacao
+AFTER INSERT ON arquivo
+FOR EACH ROW
+BEGIN
+    IF EXISTS(SELECT 1 FROM Atividades_recentes WHERE id_arquivo = NEW.id) THEN
+        UPDATE Atividades_recentes
+        SET ultima_versao = CURDATE()
+        WHERE id_arquivo = NEW.id;
+    ELSE
+        INSERT INTO Atividades_recentes (id_arquivo, ultima_versao, acesso)
+        VALUES(NEW.id, CURDATE(), 'default');
+    END IF;
+END;
+//
+
+
+CREATE TRIGGER Atualizar_acesso
+AFTER INSERT ON compartilhamento
+FOR EACH ROW
+BEGIN
+    DECLARE perm_at VARCHAR(100);
     
+    SELECT Permissoes_acesso INTO perm_at 
+    FROM arquivo 
+    WHERE id = NEW.id_arquivo;
+
+    IF perm_at = 'privado' THEN
+        UPDATE arquivo
+        SET Permissoes_acesso = 'privado/compartilhado'
+        WHERE id = NEW.id_arquivo;
+    ELSEIF perm_at = 'público' THEN
+        UPDATE arquivo
+        SET Permissoes_acesso = 'público/compartilhado'
+        WHERE id = NEW.id_arquivo;
+    END IF;
+
+    INSERT INTO historico (operacao, data_operacao, hora, conteudo_alterado, id_usuario, id_arquivo)
+    VALUES ('compartilhamento', CURDATE(), CURTIME(), 'arquivo compartilhado', NEW.id_dono, NEW.id_arquivo);
+END;
+//
+
+DELIMITER ;
 
 INSERT INTO administrador(id,login,email,senha,data_ingresso)VALUES(1,"Joao2303","joao.lucas@gmail.com","joao123", 23/03/2005);
 INSERT INTO administrador(login,email,senha,data_ingresso)VALUES("Felipezz","felipe@gmail.com","felipezz", 18/02/1999);
