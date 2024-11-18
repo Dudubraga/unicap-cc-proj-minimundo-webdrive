@@ -56,6 +56,7 @@ class Main:
                     print("[2] Visualizar meu histórico")
                     print("[3] Inserir novo arquivo")
                     print("[4] Atualizar arquivo")
+                    print("[5] Visualizar histórico")
                     
                     escolha = int(input("\nEscolha uma opção: "))
                     match escolha:
@@ -66,9 +67,19 @@ class Main:
                             cu.execute("SELECT * FROM usuarioHistorico")
                             for linha in cu: print(linha)
                         case 3:
+                            args = (
+                                input("Insira nome: "),
+                                input("Insira tipo: "),
+                                input("Insira URL: "),
+                                input("Insira permissões de acesso: "),
+                                input("Insira localização: "),
+                                input("Insira tamanho: "),
+                            )    
+                            # cu.execute(Inserts.newInsertArquivo(*args))
+                        case 4:
                             
                             pass
-                        case 4:
+                        case 5:
                             
                             pass
                 
