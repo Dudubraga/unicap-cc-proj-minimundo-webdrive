@@ -29,9 +29,34 @@ BEGIN
     UPDATE atividades_recentes
     SET ultima_versao = CURDATE()
     WHERE id_arquivo = NEW.id_arquivo;
+    -- Atualiza a data da última versão na tabela arquivo
+    UPDATE arquivo
+    SET data_modificacao = CURDATE()
+    WHERE id = NEW.id_arquivo;
 END $$
 
 DELIMITER ;
+
+-- Trigger para atualizar os registros de um novo acesso
+DELIMITER $$
+
+CREATE TRIGGER Atualizar_acesso
+AFTER INSERT ON compartilhamento
+FOR EACH ROW
+BEGIN
+    -- Atualiza a data da última versão na tabela atividades_recentes
+    UPDATE atividades_recentes
+    SET ultima_versao = CURDATE()
+    WHERE id_arquivo = NEW.id_arquivo;
+    -- Atualiza a data da última versão na tabela arquivo
+    UPDATE arquivo
+    SET data_modificacao = CURDATE()
+    WHERE id = NEW.id_arquivo;    
+END $$
+
+
+DELIMITER;
+
 INSERT INTO opera (hora, tipo_operacao, data_operacao, id_usuario, id_arquivo) VALUES
 ('17:30:00', 'modificação', '2024-11-17', 5, 5);
 DROP TRIGGER Registrar_operacao;
