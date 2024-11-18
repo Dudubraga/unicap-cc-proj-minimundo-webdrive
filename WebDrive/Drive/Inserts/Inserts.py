@@ -185,3 +185,61 @@ class Inserts:
         """    
         return command
 
+    def newInsertAdministrador(login,email,senha,data_ingresso):
+        command = f"""
+            INSERT INTO administrador(login,email,senha,data_ingresso)
+            VALUES('{login}','{email}','{senha}','{data_ingresso}')
+        """
+        return command
+    
+    def newInsertSuporta(dia,hora,descricao,id_usuario,id_administrador):
+        command = f"""
+            INSERT INTO suporta(dia,hora,descricao,id_usuario,id_administrador)
+            VALUES('{dia}','{hora}','{descricao}','{id_usuario}','{id_administrador}')
+        """
+        return command
+    
+    def newInsertArquivo(nome, tipo, URL, Permissoes_acesso, localizacao, tamanho, data_modificacao, id_usuario):
+        command = f"""
+            INSERT INTO arquivo(nome, tipo, URL, Permissoes_acesso, localizacao, tamanho, data_modificacao, id_usuario)
+            VALUES('{nome}','{tipo}','{URL}','{Permissoes_acesso}','{localizacao}','{tamanho}', '{data_modificacao}','{id_usuario}')
+        """
+        return command
+    
+    def newInsertOpera(hora, tipo_operacao, data_operacao, id_usuario, id_arquivo):
+        command = f"""
+            INSERT INTO opera (hora, tipo_operacao, data_operacao, id_usuario, id_arquivo)
+            VALUES('{hora}', '{tipo_operacao}', '{data_operacao}', '{id_usuario}', '{id_arquivo}')
+        """
+        return command
+    
+    def newInsertHistorico(operacao, data_operacao, hora, conteudo_alterado, id_usuario, id_arquivo):
+        command = f"""
+            INSERT INTO historico(operacao, data_operacao, hora, conteudo_alterado, id_usuario, id_arquivo)
+            VALUES('{operacao}','{data_operacao}','{hora}','{conteudo_alterado}','{id_usuario}')
+        """
+        return command
+
+
+    def newInsertComentario(conteudo, data_comentario, hora, id_usuario, id_arquivo):
+        command = f"""
+            INSERT INTO comentario (conteudo, data_comentario, hora, id_usuario, id_arquivo)
+            VALUES('{conteudo}', '{data_comentario}', '{hora}', '{id_usuario}', '{id_arquivo}')
+        """
+        return command
+    
+    def newInsertCompartilhamento(id_dono, id_arquivo, id_usercompartilhado, data_compartilhamento):
+        command = f"""
+            INSERT INTO compartilhamento(id_dono, id_arquivo, id_usercompartilhado, data_compartilhamento)
+            VALUES('{id_dono}','{id_arquivo}','{id_usercompartilhado}','{data_compartilhamento}')
+        """
+        return command
+
+    def newInsertAtividades_recente(id_arquivo, ultima_versao, acesso):
+        command = f"""
+            INSERT INTO Atividades_recentes (id_arquivo, ultima_versao, acesso)
+            VALUES('{id_arquivo}', '{ultima_versao}', '{acesso}')
+        """
+        return command
+    
+    
