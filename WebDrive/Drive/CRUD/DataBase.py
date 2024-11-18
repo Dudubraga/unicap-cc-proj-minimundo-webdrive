@@ -161,6 +161,7 @@ class DataBase:
     createViewUsuarioArquivos = """
         CREATE VIEW usuarioArquivo AS 
         SELECT 
+        id,
         nome AS nome_arquivo,
         tipo AS tipo_arquivo,
         URL,

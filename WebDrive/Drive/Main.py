@@ -1,17 +1,19 @@
 import mysql.connector
 from CRUD.DataBase import DataBase
+from Select.Select import Select
+from Inserts.Inserts import Inserts
+from CRUD.Procedures import Procedures
+from Update.Update import Update
 
 class Main:
     print("Usuários disponíveis:\nadministrador | usuario | empresa")
     user = input("Digite seu usuário: ")
     passwd = input("Digite sua senha: ")
         
-    
     try:
         db = mysql.connector.connect(
             host="localhost",
-            user= user,
-            passwd= passwd,
+            user= 'root',
             database="drive"
         )
     except Exception as e:
@@ -30,11 +32,11 @@ class Main:
             for table in DataBase.createTables():
                 cu.execute(f"{table}")
 
-            # for dropProcedure in ConstructProcedures.dropProcedures():
-                # cu.execute(f"{dropProcedure}")
+            for dropProcedure in Procedures.dropProcedures():
+                cu.execute(f"{dropProcedure}")
 
-            # for procedure in ConstructProcedures.createProcedures():
-                # cu.execute(f"{procedure}")
+            for procedure in Procedures.createProcedures():
+                cu.execute(f"{procedure}")
 
             for view in DataBase.createViews():
                 cu.execute(f"{view}")
@@ -42,8 +44,8 @@ class Main:
             for trigger in DataBase.createTriggers():
                 cu.execute(f"{trigger}")
 
-            # for insert in Inserts.insertDefault():
-                # cu.execute(f"{insert}")
+            for insert in Inserts.insertDefault():
+                cu.execute(f"{insert}")
 
         db.commit()
 
@@ -60,11 +62,11 @@ class Main:
                     escolha = int(input("\nEscolha uma opção: "))
                     match escolha:
                         case 1:
-                            cu.execute("SELECT * FROM usuarioArquivo")
+                            cu.execute(Select.selectUsuarioArquivos())
                             for linha in cu: print(linha)
 
                         case 2:
-                            cu.execute("SELECT * FROM usuarioHistorico")
+                            cu.execute(Select.selectUsuarioHistorico())
                             for linha in cu: print(linha)
                         case 3:
                             args = (
@@ -74,10 +76,15 @@ class Main:
                                 input("Insira permissões de acesso: "),
                                 input("Insira localização: "),
                                 input("Insira tamanho: "),
-                                # data modificacao
+                                input("Insira a data: "),
                             )    
-                            # cu.execute(Inserts.newInsertArquivo(*args))
+                            cu.execute(Inserts.newInsertArquivo(*args))
+                            db.commit()
                         case 4:
+                            id = input("Informe o ID do arquivo que deseja atualizar: ")
+
+                            cu.execute(Select.selectUsuarioArquivos())
+                            for linha in cu: print(linha)
                             args = (
                                 input("Insira o novo nome: "),
                                 input("Insira o novo tipo: "),
@@ -85,9 +92,11 @@ class Main:
                                 input("Insira as novas permissões de acesso: "),
                                 input("Insira a nova localização: "),
                                 input("Insira o novo tamanho: "),
-                                # data modificacao
+                                input("Insira a data: "),
+                                input("Insira o id do arquivo: ")
                             ) 
-                            # cu.execute(Updates.updateArquivo(*args))
+                            cu.execute(Update.updateArquivo(*args))
+                            db.commit()
                 
                 case "empresa":
                     print("\nMenu da Empresa:")
@@ -97,10 +106,12 @@ class Main:
                     escolha = int(input("\nEscolha uma opção: "))
                     match escolha:
                         case 1:
-                            cu.execute("SELECT * FROM empresaUsuarios")
+                            cu.execute(Select.selectEmpresaUsuarios())
+                            # cu.execute("SELECT * FROM empresaUsuarios")
                             for linha in cu: print(linha)
                         case 2:
-                            cu.execute("SELECT * FROM empresaArquivos")
+                            cu.execute(Select.selectEmpresaArquivos())
+                            # cu.execute("SELECT * FROM empresaArquivos")
                             for linha in cu: print(linha)
                 
                 case "administrador":
@@ -129,7 +140,8 @@ class Main:
 
                             match ans:
                                 case 1: 
-                                    cu.execute("SELECT * FROM usuario")
+                                    cu.execute(Select.selectUsuario())
+                                    # cu.execute("SELECT * FROM usuario")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
@@ -139,7 +151,7 @@ class Main:
                                         # data ingresso
                                         input("Insira o ID da instituição: ")
                                     )    
-                                    # cu.execute(Inserts.newInsertUsuario(*args))
+                                    cu.execute(Inserts.newInsertUsuario(*args))
                                 case 3:
                                     id = input("Informe o ID do usuário que deseja atualizar: ")
                                     #verifica se usuário existe e pede infos
@@ -168,7 +180,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute("SELECT * FROM arquivo")
+                                    cu.execute(Select.selectArquivo())
+                                    # cu.execute("SELECT * FROM arquivo")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
@@ -180,7 +193,7 @@ class Main:
                                         input("Insira tamanho: "),
                                         # data modificacao
                                     ) 
-                                    # cu.execute(Inserts.newInsertArquivo(*args))
+                                    cu.execute(Inserts.newInsertArquivo(*args))
                                 case 3:
                                     id = input("Informe o ID do arquivo que deseja atualizar: ")
                                     #verifica se arquivo existe e pede infos
@@ -193,11 +206,11 @@ class Main:
                                         input("Insira o novo tamanho: "),
                                         # data modificacao
                                     ) 
-                                    # cu.execute(Updates.updateArquivo(*args))
+                                    # cu.execute(Updates.updateArquivo(*args) WHERE id = arquivo.id)
                                 case 4:
                                     id = input("Informe o ID do arquivo que deseja deletar: ")
                                     # conferir existencia do arquivo
-                                    # cu.execute("DELETE arquivo WHERE id = arquivo.id")
+                                    cu.execute("DELETE arquivo WHERE id = arquivo.id")
                         
                         #HISTÓRICO
                         case 3:
@@ -209,7 +222,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute("SELECT * FROM historico")
+                                    cu.execute(Select.selectHistorico())
+                                    # cu.execute("SELECT * FROM historico")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
@@ -220,7 +234,7 @@ class Main:
                                         input("Insira o ID do usuário: "),
                                         input("Insira o ID do arquivo: "),
                                     ) 
-                                    # cu.execute(Inserts.newInsertHistorico(*args))
+                                    cu.execute(Inserts.newInsertHistorico(*args))
                                 case 3:
                                     id = input("Informe o ID do histórico que deseja atualizar: ")
                                     #verifica se histórico existe e pede infos
@@ -234,9 +248,7 @@ class Main:
                                 case 4:
                                     id = input("Informe o ID do histórico que deseja deletar: ")
                                     # conferir existencia do histórico
-                                    # cu.execute("DELETE historico WHERE id = historico.id")
-
-                        # ... código anterior ...
+                                    # cu.execute("DELETE historico WHERE id = historico.id").
 
                         #PLANO         
                         case 4:
@@ -248,7 +260,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute("SELECT * FROM plano")
+                                    cu.execute(Select.selectPlano())
+                                    # cu.execute("SELECT * FROM plano")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
@@ -257,7 +270,7 @@ class Main:
                                         input("Insira preço: "),
                                         input("Insira capacidade: ")
                                     )    
-                                    # cu.execute(Inserts.newInsertPlano(*args))
+                                    cu.execute(Inserts.newInsertPlano(*args))
                                 case 3:
                                     id = input("Informe o ID do plano que deseja atualizar: ")
                                     args = (
@@ -282,7 +295,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute("SELECT * FROM instituicao")
+                                    cu.execute(Select.selectInstituicao())
+                                    # cu.execute("SELECT * FROM instituicao")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
@@ -292,7 +306,7 @@ class Main:
                                         input("Insira telefone: "),
                                         input("Insira ID do plano: ")
                                     )    
-                                    # cu.execute(Inserts.newInsertInstituicao(*args))
+                                    cu.execute(Inserts.newInsertInstituicao(*args))
                                 case 3:
                                     id = input("Informe o ID da instituição que deseja atualizar: ")
                                     args = (
@@ -318,7 +332,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute("SELECT * FROM administrador")
+                                    cu.execute(Select.selectAdministrador())
+                                    # cu.execute("SELECT * FROM administrador")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
@@ -327,7 +342,7 @@ class Main:
                                         input("Insira nível de acesso: "),
                                         input("Insira ID da instituição: ")
                                     )    
-                                    # cu.execute(Inserts.newInsertAdministrador(*args))
+                                    cu.execute(Inserts.newInsertAdministrador(*args))
                                 case 3:
                                     id = input("Informe o ID do administrador que deseja atualizar: ")
                                     args = (
@@ -352,6 +367,7 @@ class Main:
 
                             match ans:
                                 case 1:
+                                    cu.execute(Select.selectSuporta())
                                     cu.execute("SELECT * FROM suporte")
                                     for linha in cu: print(linha)
                                 case 2:
@@ -388,7 +404,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute("SELECT * FROM alteracao")
+                                    cu.execute(Select.selectOpera())
+                                    # cu.execute("SELECT * FROM opera")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
@@ -397,7 +414,7 @@ class Main:
                                         # data_alteracao
                                         input("Insira ID do arquivo: ")
                                     )    
-                                    # cu.execute(Inserts.newInsertAlteracao(*args))
+                                    cu.execute(Inserts.newInsertOpera(*args))
                                 case 3:
                                     id = input("Informe o ID da alteração que deseja atualizar: ")
                                     args = (
@@ -406,10 +423,10 @@ class Main:
                                         input("Insira nova descrição: "),
                                         input("Insira novo ID do arquivo: ")
                                     )    
-                                    # cu.execute(Updates.updateAlteracao(*args))
+                                    # cu.execute(Updates.updateOpera(*args))
                                 case 4:
                                     id = input("Informe o ID da alteração que deseja deletar: ")
-                                    # cu.execute("DELETE alteracao WHERE id = alteracao.id")
+                                    # cu.execute("DELETE opera WHERE id = opera.id")
 
                         #COMENTÁRIOS
                         case 9:
@@ -421,7 +438,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute("SELECT * FROM comentario")
+                                    cu.execute(Select.selectComentario())
+                                    # cu.execute("SELECT * FROM comentario")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
@@ -430,7 +448,7 @@ class Main:
                                         input("Insira ID do usuário: "),
                                         input("Insira ID do arquivo: ")
                                     )    
-                                    # cu.execute(Inserts.newInsertComentario(*args))
+                                    cu.execute(Inserts.newInsertComentario(*args))
                                 case 3:
                                     id = input("Informe o ID do comentário que deseja atualizar: ")
                                     args = (
@@ -454,7 +472,7 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute("SELECT * FROM compartilhamento")
+                                    cu.execute(Select.selectCompartilhamento())
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
@@ -490,7 +508,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute("SELECT * FROM atividade_recente")
+                                    cu.execute(Select.selectAtividades_recentes())
+                                    #cu.execute("SELECT * FROM atividade_recente")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (

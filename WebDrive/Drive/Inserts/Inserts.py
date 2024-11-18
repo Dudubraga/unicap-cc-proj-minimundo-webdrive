@@ -199,10 +199,10 @@ class Inserts:
         """
         return command
     
-    def newInsertArquivo(nome, tipo, URL, Permissoes_acesso, localizacao, tamanho, data_modificacao, id_usuario):
+    def newInsertArquivo(nome, tipo, URL, Permissoes_acesso, localizacao, tamanho, data_modificacao):
         command = f"""
             INSERT INTO arquivo(nome, tipo, URL, Permissoes_acesso, localizacao, tamanho, data_modificacao, id_usuario)
-            VALUES('{nome}','{tipo}','{URL}','{Permissoes_acesso}','{localizacao}','{tamanho}', '{data_modificacao}','{id_usuario}')
+            VALUES('{nome}','{tipo}','{URL}','{Permissoes_acesso}','{localizacao}','{tamanho}', '{data_modificacao}', 2)
         """
         return command
     
