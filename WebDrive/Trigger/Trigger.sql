@@ -54,7 +54,6 @@ BEGIN
     WHERE id = NEW.id_arquivo;    
 END $$
 
-
 DELIMITER;
 
 INSERT INTO opera (hora, tipo_operacao, data_operacao, id_usuario, id_arquivo) VALUES
