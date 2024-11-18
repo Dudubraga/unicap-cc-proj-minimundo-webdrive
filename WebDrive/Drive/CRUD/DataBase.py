@@ -2,7 +2,7 @@ class DataBase:
     CreateDataBase = "CREATE DATABASE IF NOT EXISTS drive;"
     UseDataBase = "USE drive;"
     DropDataBase = "DROP DATABASE drive;"
-
+# TABLES
     createPlano = """
         CREATE TABLE IF NOT EXISTS plano(
             id INT AUTO_INCREMENT,
@@ -146,7 +146,7 @@ class DataBase:
             FOREIGN KEY (id_arquivo) REFERENCES arquivo(id)
         );
     """
-
+# USERS
     createUser = """
         CREATE USER IF NOT EXISTS 'usuario'@'localhost' IDENTIFIED BY 'user123';
     """
@@ -156,7 +156,56 @@ class DataBase:
     createUserEmpresa = """
         CREATE USER IF NOT EXISTS 'empresa'@'localhost' IDENTIFIED BY 'empresa123';
     """
+# VIEWS
+    # ver se deve mudar o id_usuario
+    createViewUsuarioArquivos = """
+        CREATE VIEW usuarioArquivo AS 
+        SELECT 
+        nome AS nome_arquivo,
+        tipo AS tipo_arquivo,
+        URL,
+        Permissoes_acesso,
+        localizacao,
+        tamanho,
+        data_modificacao
+        FROM drive.arquivo WHERE id_usuario = 2;    
+    """
+    
+    createViewUsuarioHistorico = """
+        CREATE VIEW usuarioHistorico AS
+        SELECT
+        operacao,
+        data_operacao,
+        hora,
+        conteudo_alterado,
+        id_usuario,
+        id_arquivo
+        FROM drive.historico WHERE id_usuario = 2;
+    """
 
+    createViewEmpresaUsuarios = """
+        CREATE VIEW empresaUsuarios AS
+        SELECT
+        login,
+        email,
+        data_ingresso
+        FROM drive.usuario WHERE id_instituicao = 1;    
+    """
+
+    createViewEmpresaArquivos = """
+        CREATE VIEW empresaArquivos AS
+        SELECT
+        nome,
+        tipo,
+        URL,
+        Permissoes_acesso,
+        localizacao,
+        tamanho,
+        data_modificacao,
+        id_usuario
+        FROM drive.arquivo WHERE id_usuario IN (SELECT usuario.id FROM drive.usuario WHERE id_instituicao = 1);
+    """
+# ROLES
     createRoleUsuario = """
         CREATE ROLE IF NOT EXISTS'papelusuario';
         GRANT SELECT ON usuarioArquivo TO 'papelusuario';
@@ -179,4 +228,89 @@ class DataBase:
         GRANT 'papelempresa' TO 'empresa'@'localhost';
         FLUSH PRIVILEGES;
     """
+# TRIGGERS
+    createTriggerSafe_securty = """
+        DELIMITER $$
+
+        CREATE TRIGGER Safe_security
+        BEFORE INSERT ON arquivo
+        FOR EACH ROW
+        BEGIN
+            IF NEW.tipo = 'exe' THEN
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Arquivos executáveis não são permitidos no drive.';
+            END IF;
+        END $$
+
+        DELIMITER ;    
+    """
     
+    createTriggerRegistrar_operacao = """
+        DELIMITER $$
+
+        CREATE TRIGGER Registrar_operacao
+        AFTER INSERT ON opera
+        FOR EACH ROW
+        BEGIN
+            -- Atualiza a data da última versão na tabela atividades_recentes
+            UPDATE atividades_recentes
+            SET ultima_versao = CURDATE()
+            WHERE id_arquivo = NEW.id_arquivo;
+            -- Atualiza a data da última versão na tabela arquivo
+            UPDATE arquivo
+            SET data_modificacao = CURDATE()
+            WHERE id = NEW.id_arquivo;
+        END $$
+
+        DELIMITER ;
+    """
+
+    createTriggerAtualizar_acesso = """
+        DELIMITER $$
+
+        CREATE TRIGGER Atualizar_acesso
+        AFTER INSERT ON compartilhamento
+        FOR EACH ROW
+        BEGIN
+            -- Atualiza a data da última versão na tabela atividades_recentes
+            UPDATE atividades_recentes
+            SET ultima_versao = CURDATE()
+            WHERE id_arquivo = NEW.id_arquivo;
+            -- Atualiza a data da última versão na tabela arquivo
+            UPDATE arquivo
+            SET data_modificacao = CURDATE()
+            WHERE id = NEW.id_arquivo;    
+        END $$
+
+        DELIMITER;
+    """
+    safeUpdateDisable = "SET SQL_SAFE_UPDATES = 0;"
+
+    def createTriggers():
+        triggerList = (DataBase.createTriggerSafe_securty, DataBase.createTriggerAtualizar_acesso, 
+                       DataBase.createTriggerRegistrar_operacao)
+        return triggerList
+
+    def createUsers():
+        usuariosList = (DataBase.createUser, DataBase.createUserAdministrador, 
+                        DataBase.createUserEmpresa)
+        return usuariosList
+
+    def createRoles():
+        rolesList = (DataBase.createRoleUsuario, DataBase.createRoleAdministrador, 
+                     DataBase.createRoleEmpresa)
+        return rolesList
+
+    def createViews():
+        viewsList = (DataBase.createViewUsuarioArquivos, DataBase.createViewUsuarioHistorico, 
+                     DataBase.createViewEmpresaUsuarios, DataBase.createViewEmpresaArquivos)
+        return viewsList
+    
+    def createTables():
+        tablesList = (DataBase.createArquivo, DataBase.createPlano, 
+                      DataBase.createInstituicao, DataBase.createUsuario, 
+                      DataBase.createAdministrador, DataBase.createSuporta, 
+                      DataBase.createOpera, DataBase.createHistorico, 
+                      DataBase.createComentario, DataBase.createCompartilhamento, 
+                      DataBase.createAtividadesRecentes)
+        return tablesList
