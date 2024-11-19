@@ -59,7 +59,6 @@ class Main:
                 cursor.execute(f"SELECT id, senha FROM instituicao WHERE login = '{login}'")
             info = cursor.fetchone()
             if info is not None and info[1] == senha:
-                cursor.close()
                 return True
             else:
                 cursor.close()
