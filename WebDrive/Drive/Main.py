@@ -21,32 +21,32 @@ class Main:
         print(f"Erro na conexão: {e}")
     
     else:
-        cu = db.cursor()
+        cursor = db.cursor()
 
-        def bootstrap(cu):
-            cu.execute(DataBase.CreateDataBase)
-            cu.execute(DataBase.UseDataBase)
+        def bootstrap(cursor):
+            cursor.execute(DataBase.CreateDataBase)
+            cursor.execute(DataBase.UseDataBase)
 
             for user in DataBase.createUser():
-                cu.execute(f"{user}", multi = True)
+                cursor.execute(f"{user}", multi = True)
 
             for table in DataBase.createTables():
-                cu.execute(f"{table}")
+                cursor.execute(f"{table}")
 
             for dropProcedure in Procedures.dropProcedures():
-                cu.execute(f"{dropProcedure}")
+                cursor.execute(f"{dropProcedure}")
 
             for procedure in Procedures.createProcedures():
-                cu.execute(f"{procedure}")
+                cursor.execute(f"{procedure}")
 
             for view in DataBase.createViews():
-                cu.execute(f"{view}")
+                cursor.execute(f"{view}")
 
             for trigger in DataBase.createTriggers():
-                cu.execute(f"{trigger}")
+                cursor.execute(f"{trigger}")
 
             for insert in Inserts.insertDefault():
-                cu.execute(f"{insert}")
+                cursor.execute(f"{insert}")
 
         db.commit()
 
@@ -63,12 +63,12 @@ class Main:
                     escolha = int(input("\nEscolha uma opção: "))
                     match escolha:
                         case 1:
-                            cu.execute(Select.selectUsuarioArquivos())
-                            for linha in cu: print(linha)
+                            cursor.execute(Select.selectUsuarioArquivos())
+                            for linha in cursor: print(linha)
 
                         case 2:
-                            cu.execute(Select.selectUsuarioHistorico())
-                            for linha in cu: print(linha)
+                            cursor.execute(Select.selectUsuarioHistorico())
+                            for linha in cursor: print(linha)
                         case 3:
                             args = (
                                 input("Insira nome: "),
@@ -79,11 +79,11 @@ class Main:
                                 input("Insira tamanho: "),
                                 input("Insira a data: "),
                             )    
-                            cu.execute(Inserts.newInsertArquivo(*args))
+                            cursor.execute(Inserts.newInsertArquivo(*args))
                             db.commit()
                         case 4:
-                            cu.execute(Select.selectUsuarioArquivo())
-                            for linha in cu: print(linha)
+                            cursor.execute(Select.selectUsuarioArquivo())
+                            for linha in cursor: print(linha)
                             args = (
                                 input("Insira o novo nome: "),
                                 input("Insira o novo tipo: "),
@@ -94,7 +94,7 @@ class Main:
                                 input("Insira a data: "),
                                 input("Insira o id do arquivo: ")
                             ) 
-                            cu.execute(Update.updateArquivo(*args))
+                            cursor.execute(Update.updateArquivo(*args))
                             db.commit()
                     db.commit()
                 
@@ -106,11 +106,11 @@ class Main:
                     escolha = int(input("\nEscolha uma opção: "))
                     match escolha:
                         case 1:
-                            cu.execute(Select.selectEmpresaUsuarios())
-                            for linha in cu: print(linha)
+                            cursor.execute(Select.selectEmpresaUsuarios())
+                            for linha in cursor: print(linha)
                         case 2:
-                            cu.execute(Select.selectEmpresaArquivos())
-                            for linha in cu: print(linha)
+                            cursor.execute(Select.selectEmpresaArquivos())
+                            for linha in cursor: print(linha)
                     db.commit()
                     opcao = int(input("\nDeseja continuar?\n[0] Não\n[1] Sim\n"))
                     
@@ -140,8 +140,8 @@ class Main:
 
                             match ans:
                                 case 1: 
-                                    cu.execute(Select.selectUsuario())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectUsuario())
+                                    for linha in cursor: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira login: "),
@@ -150,7 +150,7 @@ class Main:
                                         input("Insira a data: "),
                                         input("Insira o ID da instituição: ")
                                     )    
-                                    cu.execute(Inserts.newInsertUsuario(*args))
+                                    cursor.execute(Inserts.newInsertUsuario(*args))
                                     db.commit()
                                 case 3:
                                     id = input("Informe o ID do usuário que deseja atualizar: ")
@@ -162,14 +162,14 @@ class Main:
                                         input("Insira o novo ID da instituição: "),
                                         id
                                     )    
-                                    cu.execute(Update.updateUsuario(*args))
+                                    cursor.execute(Update.updateUsuario(*args))
                                     db.commit()
                                     pass
                                 case 4:
                                     id = input("Informe o ID do usuário que deseja deletar: ")
                                     confirmacao = input("Tem certeza que quer deletar o usuário " + id + "? [S/N]: ")
                                     if(confirmacao == 'S'):
-                                        cu.execute(Delete.deleteUsuario())
+                                        cursor.execute(Delete.deleteUsuario())
                                         db.commit()
                                     else:
                                         print("Operação cancelada! ")
@@ -184,11 +184,11 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute(Select.selectArquivo())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectArquivo())
+                                    for linha in cursor: print(linha)
                                 case 2:
-                                    cu.execute(Select.selectArquivo())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectArquivo())
+                                    for linha in cursor: print(linha)
                                     args = (
                                         input("Insira nome: "),
                                         input("Insira tipo: "),
@@ -198,11 +198,11 @@ class Main:
                                         input("Insira tamanho: "),
                                         input("Insira a data: "),
                                     )    
-                                    cu.execute(Inserts.newInsertArquivo(*args))
+                                    cursor.execute(Inserts.newInsertArquivo(*args))
                                     db.commit()
                                 case 3:
-                                    cu.execute(Select.selectArquivo())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectArquivo())
+                                    for linha in cursor: print(linha)
                                     args = (
                                         input("Insira o novo nome: "),
                                         input("Insira o novo tipo: "),
@@ -213,17 +213,17 @@ class Main:
                                         input("Insira a data: "),
                                         input("Insira o id do arquivo: ")
                                     ) 
-                                    cu.execute(Update.updateArquivo(*args))
+                                    cursor.execute(Update.updateArquivo(*args))
                                     db.commit()
                                 case 4:
                                     id = input("Informe o ID do arquivo que deseja deletar: ")
                                     confirmacao = input("Tem certeza que quer deletar o arquivo " + id + "? [S/N]: ")
                                     if(confirmacao == 'S'):
-                                        cu.execute(Delete.deleteArquivo())
+                                        cursor.execute(Delete.deleteArquivo())
                                         db.commit()
                                     else:
                                         print("Operação cancelada! ")
-                        
+
                         #HISTÓRICO
                         case 3:
                             print("[1] Visualizar histórico")
@@ -234,8 +234,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute(Select.selectHistorico())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectHistorico())
+                                    for linha in cursor: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira operação: "),
@@ -245,7 +245,7 @@ class Main:
                                         input("Insira o ID do usuário: "),
                                         input("Insira o ID do arquivo: "),
                                     ) 
-                                    cu.execute(Inserts.newInsertHistorico(*args))
+                                    cursor.execute(Inserts.newInsertHistorico(*args))
                                     db.commit()
                                 case 3:
                                     id = input("Informe o ID do histórico que deseja atualizar: ")
@@ -258,13 +258,13 @@ class Main:
                                         input("Insira o novo ID do arquivo: "),
                                         id
                                     ) 
-                                    cu.execute(Update.updateHistorico(*args))
+                                    cursor.execute(Update.updateHistorico(*args))
                                     db.commit()
                                 case 4:
                                     id = input("Informe o ID do histórico que deseja deletar: ")
                                     confirmacao = input("Tem certeza que quer deletar o histórico " + id + "? [S/N]: ")
                                     if(confirmacao == 'S'):
-                                        cu.execute(Delete.deleteHistorico())
+                                        cursor.execute(Delete.deleteHistorico())
                                         db.commit()
                                     else:
                                         print("Operação cancelada! ")
@@ -279,8 +279,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute(Select.selectPlano())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectPlano())
+                                    for linha in cursor: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira nome: "),
@@ -288,7 +288,7 @@ class Main:
                                         input("Insira data de aquisição: "),
                                         input("Insira capacidade: ")
                                     )    
-                                    cu.execute(Inserts.newInsertPlano(*args))
+                                    cursor.execute(Inserts.newInsertPlano(*args))
                                     db.commit()
                                 case 3:
                                     id = input("Informe o ID do plano que deseja atualizar: ")
@@ -299,13 +299,13 @@ class Main:
                                         input("Insira nova data aquisição"),
                                         input("Insira nova capacidade: ")
                                     )    
-                                    cu.execute(Update.updatePlano(*args))
+                                    cursor.execute(Update.updatePlano(*args))
                                     db.commit()
                                 case 4:
                                     id = input("Informe o ID do plano que deseja deletar: ")
                                     confirmacao = input("Tem certeza que quer deletar o plano " + id + "? [S/N]: ")
                                     if(confirmacao == 'S'):
-                                        cu.execute(Delete.deletePlano())
+                                        cursor.execute(Delete.deletePlano())
                                         db.commit()
                                     else:
                                         print("Operação cancelada! ")
@@ -320,8 +320,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute(Select.selectInstituicao())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectInstituicao())
+                                    for linha in cursor: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira nome: "),
@@ -329,7 +329,7 @@ class Main:
                                         input("Insira endereço: "),
                                         input("Insira ID do plano: ")
                                     )    
-                                    cu.execute(Inserts.newInsertInstituicao(*args))
+                                    cursor.execute(Inserts.newInsertInstituicao(*args))
                                     db.commit()
                                 case 3:
                                     id = input("Informe o ID da instituição que deseja atualizar: ")
@@ -340,13 +340,13 @@ class Main:
                                         input("Insira novo ID do plano: "),
                                         id
                                     )    
-                                    cu.execute(Update.updateInstituicao(*args))
+                                    cursor.execute(Update.updateInstituicao(*args))
                                     db.commit()
                                 case 4:
                                     id = input("Informe o ID da instituição que deseja deletar: ")
                                     confirmacao = input("Tem certeza que quer deletar a instituição " + id + "? [S/N]: ")
                                     if(confirmacao == 'S'):
-                                        cu.execute(Delete.deleteInstituicao(id))
+                                        cursor.execute(Delete.deleteInstituicao(id))
                                         db.commit()
                                     else:
                                         print("Operação cancelada! ")
@@ -361,8 +361,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute(Select.selectAdministrador())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectAdministrador())
+                                    for linha in cursor: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira login: "),
@@ -370,7 +370,7 @@ class Main:
                                         input("Insira senha: "),
                                         input("Insira a data de ingresso: ")
                                     )    
-                                    cu.execute(Inserts.newInsertAdministrador(*args))
+                                    cursor.execute(Inserts.newInsertAdministrador(*args))
                                     db.commit()
                                 case 3:
                                     id = input("Informe o ID do administrador que deseja atualizar: ")
@@ -381,13 +381,13 @@ class Main:
                                         input("Insira a nova data de ingresso: "),
                                         id
                                     )    
-                                    cu.execute(Update.updateAdministrador(*args))
+                                    cursor.execute(Update.updateAdministrador(*args))
                                     db.commit()
                                 case 4:
                                     id = input("Informe o ID do administrador que deseja deletar: ")
                                     confirmacao = input("Tem certeza que quer deletar o administrador " + id + "? [S/N]: ")
                                     if(confirmacao == 'S'):
-                                        cu.execute(Delete.deleteAdministrador())
+                                        cursor.execute(Delete.deleteAdministrador())
                                         db.commit()
                                     else:
                                         print("Operação cancelada! ")
@@ -402,8 +402,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute(Select.selectSuporta())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectSuporta())
+                                    for linha in cursor: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira dia: "),
@@ -412,7 +412,7 @@ class Main:
                                         input("Insira ID do usuário: "),
                                         input("Insira ID do arquivo: ")
                                     )    
-                                    cu.execute(Inserts.newInsertSuporte(*args))
+                                    cursor.execute(Inserts.newInsertSuporte(*args))
                                     db.commit()
                                 case 3:
                                     id = input("Informe o ID do suporte que deseja atualizar: ")
@@ -424,13 +424,13 @@ class Main:
                                         input("Insira nova prioridade: "),
                                         input("Insira novo ID do usuário: ")
                                     )    
-                                    cu.execute(Update.updateSuporte(*args))
+                                    cursor.execute(Update.updateSuporte(*args))
                                     db.commit()
                                 case 4:
                                     id = input("Informe o ID do suporte que deseja deletar: ")
                                     confirmacao = input("Tem certeza que quer deletar o suporte " + id + "? [S/N]: ")
                                     if(confirmacao == 'S'):
-                                        cu.execute(Delete.deleteSuporta())
+                                        cursor.execute(Delete.deleteSuporta())
                                         db.commit()
                                     else:
                                         print("Operação cancelada! ")
@@ -445,8 +445,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute(Select.selectOpera())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectOpera())
+                                    for linha in cursor: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira a hora: "),
@@ -455,7 +455,7 @@ class Main:
                                         input("Insira ID do usuário: "),
                                         input("Insira ID do arquivo: ")
                                     )    
-                                    cu.execute(Inserts.newInsertOpera(*args))
+                                    cursor.execute(Inserts.newInsertOpera(*args))
                                     db.commit()
                                 case 3:
                                     id = input("Informe o ID da alteração que deseja atualizar: ")
@@ -467,13 +467,13 @@ class Main:
                                         input("Insira o novo ID do arquivo: "),
                                         id
                                     )    
-                                    cu.execute(Update.updateOpera(*args))
+                                    cursor.execute(Update.updateOpera(*args))
                                     db.commit()
                                 case 4:
                                     id = input("Informe o ID da operação que deseja deletar: ")
                                     confirmacao = input("Tem certeza que quer deletar a operação " + id + "? [S/N]: ")
                                     if(confirmacao == 'S'):
-                                        cu.execute(Delete.deleteOpera())
+                                        cursor.execute(Delete.deleteOpera())
                                         db.commit()
                                     else:
                                         print("Operação cancelada! ")
@@ -488,8 +488,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute(Select.selectComentario())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectComentario())
+                                    for linha in cursor: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira o conteúdo: "),
@@ -498,7 +498,7 @@ class Main:
                                         input("Insira ID do usuário: "),
                                         input("Insira ID do arquivo: ")
                                     )    
-                                    cu.execute(Inserts.newInsertComentario(*args))
+                                    cursor.execute(Inserts.newInsertComentario(*args))
                                     db.commit()
                                 case 3:
                                     id = input("Informe o ID do comentário que deseja atualizar: ")
@@ -510,13 +510,13 @@ class Main:
                                         input("Insira novo ID do arquivo: "),
                                         id
                                     )    
-                                    cu.execute(Update.updateComentario(*args))
+                                    cursor.execute(Update.updateComentario(*args))
                                     db.commit()
                                 case 4:
                                     id = input("Informe o ID do usuário que deseja deletar: ")
                                     confirmacao = input("Tem certeza que quer deletar o arquivo " + id + "? [S/N]: ")
                                     if(confirmacao == 'S'):
-                                        cu.execute(Delete.deleteComentario())
+                                        cursor.execute(Delete.deleteComentario())
                                         db.commit()
                                     else:
                                         print("Operação cancelada! ")
@@ -531,8 +531,8 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute(Select.selectCompartilhamento())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectCompartilhamento())
+                                    for linha in cursor: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira ID do usuário origem: "),
@@ -540,7 +540,7 @@ class Main:
                                         input("Insira ID do usuário destino: "),
                                         input("Insira a data do compartilhamento: "),
                                     )    
-                                    cu.execute(Inserts.newInsertCompartilhamento(*args))
+                                    cursor.execute(Inserts.newInsertCompartilhamento(*args))
                                     db.commit()
                                 case 3:
                                     id = input("Informe o ID do compartilhamento que deseja atualizar: ")
@@ -552,13 +552,13 @@ class Main:
                                         input("Insira novo ID do arquivo: "),
                                         id
                                     )    
-                                    cu.execute(Update.updateCompartilhamento(*args))
+                                    cursor.execute(Update.updateCompartilhamento(*args))
                                     db.commit()
                                 case 4:
                                     id = input("Informe o ID do compartilhamento que deseja deletar: ")
                                     confirmacao = input("Tem certeza que quer deletar o compartilhame " + id + "? [S/N]: ")
                                     if(confirmacao == 'S'):
-                                        cu.execute(Delete.deleteAdministrador())
+                                        cursor.execute(Delete.deleteAdministrador())
                                         db.commit()
                                     else:
                                         print("Operação cancelada! ")
@@ -573,15 +573,15 @@ class Main:
 
                             match ans:
                                 case 1:
-                                    cu.execute(Select.selectAtividades_recentes())
-                                    for linha in cu: print(linha)
+                                    cursor.execute(Select.selectAtividades_recentes())
+                                    for linha in cursor: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira ID do arquivo: "),
                                         input("Insira a última versão: "),
                                         input("Insira o tipo de acesso: ")
                                     )    
-                                    cu.execute(Inserts.newInsertAtividade(*args))
+                                    cursor.execute(Inserts.newInsertAtividade(*args))
                                     db.commit()
                                 case 3:
                                     id = input("Informe o ID do arquivo que deseja atualizar: ")
@@ -590,15 +590,17 @@ class Main:
                                         input("Insira o novo tipo de acesso: "),
                                         input("Insira o novo ID do arquivo: ")
                                     )    
-                                    cu.execute(Update.updateAtividade(*args))
+                                    cursor.execute(Update.updateAtividade(*args))
                                     db.commit()
                                 case 4:
                                     id = input("Informe o ID da atividade que deseja deletar: ")
                                     confirmacao = input("Tem certeza que quer deletar a atividade " + id + "? [S/N]: ")
                                     if(confirmacao == 'S'):
-                                        cu.execute(Delete.deleteAtividadesRecentes())
+                                        cursor.execute(Delete.deleteAtividadesRecentes())
                                         db.commit()
                                     else:
                                         print("Operação cancelada! ")
                     db.commit()
                     opcao = int(input("\nDeseja continuar?\n[0] Não\n[1] Sim\n"))
+            cursor.close()
+                    

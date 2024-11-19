@@ -6,33 +6,23 @@ class Procedures:
 
 
     createProcedureVerificar_atividades = """
-        DELIMITER $$
-        
         CREATE PROCEDURE Verificar_atividades()
         BEGIN
         	UPDATE atividades_recentes SET ultima_versao = CURDATE();
-        END $$
-        
-        DELIMITER;        
+        END;
     """   
     
     createProcedureConta_usuarios = """
-        DELIMITER $$
-        
         CREATE PROCEDURE Conta_usuarios (IN id_arq INT)
         BEGIN
         	DECLARE cont INT;    
             SELECT COUNT(DISTINCT id_usercompartilhado) INTO cont FROM drive.compartilhamento WHERE id_arquivo = id_arq;
             SET cont := cont+1;
             SELECT cont AS qtd_usuarios;
-        END $$
-
-        DELIMITER;
+        END;
     """   
     
     createProcedureChavear = """
-        DELIMITER $$
-    
         CREATE PROCEDURE Chavear(IN id_arq INT)
         BEGIN
         		IF (SELECT atividades_recentes.acesso FROM atividades_recentes WHERE id_arquivo = id_arq) = 'prioritário' THEN
@@ -40,9 +30,7 @@ class Procedures:
         		ELSE
         			UPDATE atividades_recentes SET acesso = 'prioritário' WHERE id_arquivo = id_arq;
         		END IF;
-        END $$
-        
-        DELIMITER;  
+        END;
     """   
     
     createProcedureRemover_acessos = """
@@ -51,10 +39,24 @@ class Procedures:
         CREATE PROCEDURE Remover_acessos(IN id_arq INT)
         BEGIN
         	DELETE FROM compartilhamento WHERE id_arquivo = id_arq;
-        END $$
-        
-        DELIMITER ;
+        END;
     """
+
+    def ContaUsuarios(id_arq):
+        command = f"CALL Conta_usuarios({id_arq});"
+        return command
+    
+    def VerificarAtividades():
+        command = f"CALL Verificar_atividades();"
+        return command
+    
+    def Chavear(id_arq):
+        command = f"CALL Chavear({id_arq});"
+        return command
+    
+    def RemoverAcessos(id_arq):
+        command = f"CALL Remover_acessos({id_arq});"
+        return command
 
     def dropProcedures():
         proceduresList = (Procedures.dropProcedureVerificar_atividades, Procedures.dropProcedureConta_usuarios,
