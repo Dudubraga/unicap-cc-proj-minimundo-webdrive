@@ -114,6 +114,7 @@ class Main:
                                 cursor.execute(Update.updateArquivo(*args))
                                 db.commit()
                         db.commit()
+                        opcao = int(input("\nDeseja continuar?\n[0] Não\n[1] Sim\n"))
 
                     case "empresa":
                         print("\nMenu da Empresa:")
