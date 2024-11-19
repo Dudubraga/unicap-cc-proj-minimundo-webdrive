@@ -3,13 +3,14 @@ from CRUD.DataBase import DataBase
 from Select.Select import Select
 from Inserts.Inserts import Inserts
 from CRUD.Procedures import Procedures
-from Update.Update import Update
+from CRUD.Update import Update
+from CRUD.Delete import Delete
 
 class Main:
     print("Usuários disponíveis:\nadministrador | usuario | empresa")
     user = input("Digite seu usuário: ")
     passwd = input("Digite sua senha: ")
-        
+
     try:
         db = mysql.connector.connect(
             host="localhost",
@@ -81,9 +82,7 @@ class Main:
                             cu.execute(Inserts.newInsertArquivo(*args))
                             db.commit()
                         case 4:
-                            id = input("Informe o ID do arquivo que deseja atualizar: ")
-
-                            cu.execute(Select.selectUsuarioArquivos())
+                            cu.execute(Select.selectUsuarioArquivo())
                             for linha in cu: print(linha)
                             args = (
                                 input("Insira o novo nome: "),
@@ -97,6 +96,7 @@ class Main:
                             ) 
                             cu.execute(Update.updateArquivo(*args))
                             db.commit()
+                    db.commit()
                 
                 case "empresa":
                     print("\nMenu da Empresa:")
@@ -107,17 +107,17 @@ class Main:
                     match escolha:
                         case 1:
                             cu.execute(Select.selectEmpresaUsuarios())
-                            # cu.execute("SELECT * FROM empresaUsuarios")
                             for linha in cu: print(linha)
                         case 2:
                             cu.execute(Select.selectEmpresaArquivos())
-                            # cu.execute("SELECT * FROM empresaArquivos")
                             for linha in cu: print(linha)
-                
+                    db.commit()
+                    opcao = int(input("\nDeseja continuar?\n[0] Não\n[1] Sim\n"))
+                    
                 case "administrador":
                     print("\nMenu do Administrador:")
-                    print("[1] Gerenciar usuários")
-                    print("[2] Gerenciar arquivos")
+                    print("[1] Gerenciar usuários") #feito
+                    print("[2] Gerenciar arquivos")#feito
                     print("[3] Gerenciar histórico")
                     print("[4] Gerenciar plano")
                     print("[5] Gerenciar instituição")
@@ -136,39 +136,43 @@ class Main:
                             print("[2] Inserir novo usuário")
                             print("[3] Atualizar usuário")
                             print("[4] Deletar usuário")
-                            ans = int(input())
+                            ans = int(input("\nEscolha uma opção: "))
 
                             match ans:
                                 case 1: 
                                     cu.execute(Select.selectUsuario())
-                                    # cu.execute("SELECT * FROM usuario")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira login: "),
                                         input("Insira e-mail: "),
                                         input("Insira senha: "),
-                                        # data ingresso
+                                        input("Insira a data: "),
                                         input("Insira o ID da instituição: ")
                                     )    
                                     cu.execute(Inserts.newInsertUsuario(*args))
+                                    db.commit()
                                 case 3:
                                     id = input("Informe o ID do usuário que deseja atualizar: ")
-                                    #verifica se usuário existe e pede infos
                                     args = (
-                                        id,
                                         input("Insira o novo login: "),
                                         input("Insira o novo e-mail: "),
                                         input("Insira a nova senha: "),
-                                        # data ingresso
-                                        input("Insira o novo ID da instituição: ")
+                                        input("Insira a data: "),
+                                        input("Insira o novo ID da instituição: "),
+                                        id
                                     )    
-                                    # cu.execute(Update.updateUsuario(*args))
+                                    cu.execute(Update.updateUsuario(*args))
+                                    db.commit()
                                     pass
                                 case 4:
                                     id = input("Informe o ID do usuário que deseja deletar: ")
-                                    # conferir existencia do usuário
-                                    cu.execute("DELETE usuario WHERE id = usuario.id")
+                                    confirmacao = input("Tem certeza que quer deletar o usuário " + id + "? [S/N]: ")
+                                    if(confirmacao == 'S'):
+                                        cu.execute(Delete.deleteUsuario())
+                                        db.commit()
+                                    else:
+                                        print("Operação cancelada! ")
 
                         #ARQUIVO
                         case 2:
@@ -176,14 +180,15 @@ class Main:
                             print("[2] Inserir novo arquivo")
                             print("[3] Atualizar arquivo")
                             print("[4] Deletar arquivo")
-                            ans = int(input())
+                            ans = int(input("\nEscolha uma opção: "))
 
                             match ans:
                                 case 1:
                                     cu.execute(Select.selectArquivo())
-                                    # cu.execute("SELECT * FROM arquivo")
                                     for linha in cu: print(linha)
                                 case 2:
+                                    cu.execute(Select.selectArquivo())
+                                    for linha in cu: print(linha)
                                     args = (
                                         input("Insira nome: "),
                                         input("Insira tipo: "),
@@ -191,26 +196,33 @@ class Main:
                                         input("Insira permissões de acesso: "),
                                         input("Insira localização: "),
                                         input("Insira tamanho: "),
-                                        # data modificacao
-                                    ) 
+                                        input("Insira a data: "),
+                                    )    
                                     cu.execute(Inserts.newInsertArquivo(*args))
+                                    db.commit()
                                 case 3:
-                                    id = input("Informe o ID do arquivo que deseja atualizar: ")
-                                    #verifica se arquivo existe e pede infos
+                                    cu.execute(Select.selectArquivo())
+                                    for linha in cu: print(linha)
                                     args = (
                                         input("Insira o novo nome: "),
                                         input("Insira o novo tipo: "),
-                                        input("Insira o novo URL: "),
+                                        input("Insira p novo URL: "),
                                         input("Insira as novas permissões de acesso: "),
                                         input("Insira a nova localização: "),
                                         input("Insira o novo tamanho: "),
-                                        # data modificacao
+                                        input("Insira a data: "),
+                                        input("Insira o id do arquivo: ")
                                     ) 
-                                    # cu.execute(Updates.updateArquivo(*args) WHERE id = arquivo.id)
+                                    cu.execute(Update.updateArquivo(*args))
+                                    db.commit()
                                 case 4:
                                     id = input("Informe o ID do arquivo que deseja deletar: ")
-                                    # conferir existencia do arquivo
-                                    cu.execute("DELETE arquivo WHERE id = arquivo.id")
+                                    confirmacao = input("Tem certeza que quer deletar o arquivo " + id + "? [S/N]: ")
+                                    if(confirmacao == 'S'):
+                                        cu.execute(Delete.deleteArquivo())
+                                        db.commit()
+                                    else:
+                                        print("Operação cancelada! ")
                         
                         #HISTÓRICO
                         case 3:
@@ -218,37 +230,44 @@ class Main:
                             print("[2] Inserir novo histórico")
                             print("[3] Atualizar histórico")
                             print("[4] Deletar histórico")
-                            ans = int(input())
+                            ans = int(input("\nEscolha uma opção: "))
 
                             match ans:
                                 case 1:
                                     cu.execute(Select.selectHistorico())
-                                    # cu.execute("SELECT * FROM historico")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira operação: "),
-                                        # data
-                                        # hora
+                                        input("Insira a data: "),
+                                        input("Insira a hora: "),
                                         input("Insira o conteúdo alterado: "),
                                         input("Insira o ID do usuário: "),
                                         input("Insira o ID do arquivo: "),
                                     ) 
                                     cu.execute(Inserts.newInsertHistorico(*args))
+                                    db.commit()
                                 case 3:
                                     id = input("Informe o ID do histórico que deseja atualizar: ")
-                                    #verifica se histórico existe e pede infos
                                     args = (
                                         input("Insira a nova operação: "),
+                                        input("Insira a nova data: "),
+                                        input("Insira a nova hora: "),
                                         input("Insira o novo conteúdo alterado: "),
                                         input("Insira o novo ID do usuário: "),
                                         input("Insira o novo ID do arquivo: "),
+                                        id
                                     ) 
-                                    # cu.execute(Updates.updateHistorico(*args))
+                                    cu.execute(Update.updateHistorico(*args))
+                                    db.commit()
                                 case 4:
                                     id = input("Informe o ID do histórico que deseja deletar: ")
-                                    # conferir existencia do histórico
-                                    # cu.execute("DELETE historico WHERE id = historico.id").
+                                    confirmacao = input("Tem certeza que quer deletar o histórico " + id + "? [S/N]: ")
+                                    if(confirmacao == 'S'):
+                                        cu.execute(Delete.deleteHistorico())
+                                        db.commit()
+                                    else:
+                                        print("Operação cancelada! ")
 
                         #PLANO         
                         case 4:
@@ -256,34 +275,40 @@ class Main:
                             print("[2] Inserir novo plano")
                             print("[3] Atualizar plano")
                             print("[4] Deletar plano")
-                            ans = int(input())
+                            ans = int(input("\nEscolha uma opção: "))
 
                             match ans:
                                 case 1:
                                     cu.execute(Select.selectPlano())
-                                    # cu.execute("SELECT * FROM plano")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira nome: "),
-                                        input("Insira descrição: "),
-                                        input("Insira preço: "),
+                                        input("Insira duração: "),
+                                        input("Insira data de aquisição: "),
                                         input("Insira capacidade: ")
                                     )    
                                     cu.execute(Inserts.newInsertPlano(*args))
+                                    db.commit()
                                 case 3:
                                     id = input("Informe o ID do plano que deseja atualizar: ")
                                     args = (
-                                        id,
+                
                                         input("Insira novo nome: "),
-                                        input("Insira nova descrição: "),
-                                        input("Insira novo preço: "),
+                                        input("Insira nova duração: "),
+                                        input("Insira nova data aquisição"),
                                         input("Insira nova capacidade: ")
                                     )    
-                                    # cu.execute(Updates.updatePlano(*args))
+                                    cu.execute(Update.updatePlano(*args))
+                                    db.commit()
                                 case 4:
                                     id = input("Informe o ID do plano que deseja deletar: ")
-                                    # cu.execute("DELETE plano WHERE id = plano.id")
+                                    confirmacao = input("Tem certeza que quer deletar o plano " + id + "? [S/N]: ")
+                                    if(confirmacao == 'S'):
+                                        cu.execute(Delete.deletePlano())
+                                        db.commit()
+                                    else:
+                                        print("Operação cancelada! ")
 
                         #INSTITUIÇÃO
                         case 5:
@@ -291,36 +316,40 @@ class Main:
                             print("[2] Inserir nova instituição")
                             print("[3] Atualizar instituição")
                             print("[4] Deletar instituição")
-                            ans = int(input())
+                            ans = int(input("\nEscolha uma opção: "))
 
                             match ans:
                                 case 1:
                                     cu.execute(Select.selectInstituicao())
-                                    # cu.execute("SELECT * FROM instituicao")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira nome: "),
-                                        input("Insira CNPJ: "),
+                                        input("Insira causa social: "),
                                         input("Insira endereço: "),
-                                        input("Insira telefone: "),
                                         input("Insira ID do plano: ")
                                     )    
                                     cu.execute(Inserts.newInsertInstituicao(*args))
+                                    db.commit()
                                 case 3:
                                     id = input("Informe o ID da instituição que deseja atualizar: ")
                                     args = (
-                                        id,
                                         input("Insira novo nome: "),
-                                        input("Insira novo CNPJ: "),
+                                        input("Insira nova causa social: "),
                                         input("Insira novo endereço: "),
-                                        input("Insira novo telefone: "),
-                                        input("Insira novo ID do plano: ")
+                                        input("Insira novo ID do plano: "),
+                                        id
                                     )    
-                                    # cu.execute(Updates.updateInstituicao(*args))
+                                    cu.execute(Update.updateInstituicao(*args))
+                                    db.commit()
                                 case 4:
                                     id = input("Informe o ID da instituição que deseja deletar: ")
-                                    # cu.execute("DELETE instituicao WHERE id = instituicao.id")
+                                    confirmacao = input("Tem certeza que quer deletar a instituição " + id + "? [S/N]: ")
+                                    if(confirmacao == 'S'):
+                                        cu.execute(Delete.deleteInstituicao(id))
+                                        db.commit()
+                                    else:
+                                        print("Operação cancelada! ")
 
                         #ADMINISTRADOR
                         case 6:
@@ -333,29 +362,35 @@ class Main:
                             match ans:
                                 case 1:
                                     cu.execute(Select.selectAdministrador())
-                                    # cu.execute("SELECT * FROM administrador")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
                                         input("Insira login: "),
+                                        input("Insira e-mail: "),
                                         input("Insira senha: "),
-                                        input("Insira nível de acesso: "),
-                                        input("Insira ID da instituição: ")
+                                        input("Insira a data de ingresso: ")
                                     )    
                                     cu.execute(Inserts.newInsertAdministrador(*args))
+                                    db.commit()
                                 case 3:
                                     id = input("Informe o ID do administrador que deseja atualizar: ")
                                     args = (
-                                        id,
                                         input("Insira novo login: "),
+                                        input("Insira novo e-mail: "),
                                         input("Insira nova senha: "),
-                                        input("Insira novo nível de acesso: "),
-                                        input("Insira novo ID da instituição: ")
+                                        input("Insira a nova data de ingresso: "),
+                                        id
                                     )    
-                                    # cu.execute(Updates.updateAdministrador(*args))
+                                    cu.execute(Update.updateAdministrador(*args))
+                                    db.commit()
                                 case 4:
                                     id = input("Informe o ID do administrador que deseja deletar: ")
-                                    # cu.execute("DELETE administrador WHERE id = administrador.id")
+                                    confirmacao = input("Tem certeza que quer deletar o administrador " + id + "? [S/N]: ")
+                                    if(confirmacao == 'S'):
+                                        cu.execute(Delete.deleteAdministrador())
+                                        db.commit()
+                                    else:
+                                        print("Operação cancelada! ")
 
                         #SUPORTE
                         case 7:
@@ -368,17 +403,17 @@ class Main:
                             match ans:
                                 case 1:
                                     cu.execute(Select.selectSuporta())
-                                    cu.execute("SELECT * FROM suporte")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
-                                        input("Insira título: "),
+                                        input("Insira dia: "),
+                                        input("Insira hora: "),
                                         input("Insira descrição: "),
-                                        input("Insira status: "),
-                                        input("Insira prioridade: "),
-                                        input("Insira ID do usuário: ")
+                                        input("Insira ID do usuário: "),
+                                        input("Insira ID do arquivo: ")
                                     )    
-                                    # cu.execute(Inserts.newInsertSuporte(*args))
+                                    cu.execute(Inserts.newInsertSuporte(*args))
+                                    db.commit()
                                 case 3:
                                     id = input("Informe o ID do suporte que deseja atualizar: ")
                                     args = (
@@ -389,12 +424,18 @@ class Main:
                                         input("Insira nova prioridade: "),
                                         input("Insira novo ID do usuário: ")
                                     )    
-                                    # cu.execute(Updates.updateSuporte(*args))
+                                    cu.execute(Update.updateSuporte(*args))
+                                    db.commit()
                                 case 4:
                                     id = input("Informe o ID do suporte que deseja deletar: ")
-                                    # cu.execute("DELETE suporte WHERE id = suporte.id")
+                                    confirmacao = input("Tem certeza que quer deletar o suporte " + id + "? [S/N]: ")
+                                    if(confirmacao == 'S'):
+                                        cu.execute(Delete.deleteSuporta())
+                                        db.commit()
+                                    else:
+                                        print("Operação cancelada! ")
 
-                        #ALTERAÇÕES
+                        #OPERA
                         case 8:
                             print("[1] Visualizar alterações")
                             print("[2] Inserir nova alteração")
@@ -405,28 +446,37 @@ class Main:
                             match ans:
                                 case 1:
                                     cu.execute(Select.selectOpera())
-                                    # cu.execute("SELECT * FROM opera")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
-                                        input("Insira tipo: "),
-                                        input("Insira descrição: "),
-                                        # data_alteracao
+                                        input("Insira a hora: "),
+                                        input("Insira o tipo da operação: "),
+                                        input("Insira a data: "),
+                                        input("Insira ID do usuário: "),
                                         input("Insira ID do arquivo: ")
                                     )    
                                     cu.execute(Inserts.newInsertOpera(*args))
+                                    db.commit()
                                 case 3:
                                     id = input("Informe o ID da alteração que deseja atualizar: ")
                                     args = (
-                                        id,
-                                        input("Insira novo tipo: "),
-                                        input("Insira nova descrição: "),
-                                        input("Insira novo ID do arquivo: ")
+                                        input("Insira a nova hora: "),
+                                        input("Insira o novo tipo da operação: "),
+                                        input("Insira a nova data: "),
+                                        input("Insira o novo ID do usuário: "),
+                                        input("Insira o novo ID do arquivo: "),
+                                        id
                                     )    
-                                    # cu.execute(Updates.updateOpera(*args))
+                                    cu.execute(Update.updateOpera(*args))
+                                    db.commit()
                                 case 4:
-                                    id = input("Informe o ID da alteração que deseja deletar: ")
-                                    # cu.execute("DELETE opera WHERE id = opera.id")
+                                    id = input("Informe o ID da operação que deseja deletar: ")
+                                    confirmacao = input("Tem certeza que quer deletar a operação " + id + "? [S/N]: ")
+                                    if(confirmacao == 'S'):
+                                        cu.execute(Delete.deleteOpera())
+                                        db.commit()
+                                    else:
+                                        print("Operação cancelada! ")
 
                         #COMENTÁRIOS
                         case 9:
@@ -439,28 +489,37 @@ class Main:
                             match ans:
                                 case 1:
                                     cu.execute(Select.selectComentario())
-                                    # cu.execute("SELECT * FROM comentario")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
-                                        input("Insira conteúdo: "),
-                                        # data_comentario
+                                        input("Insira o conteúdo: "),
+                                        input("Insira a data: "),
+                                        input("Insira a hora: "),
                                         input("Insira ID do usuário: "),
                                         input("Insira ID do arquivo: ")
                                     )    
                                     cu.execute(Inserts.newInsertComentario(*args))
+                                    db.commit()
                                 case 3:
                                     id = input("Informe o ID do comentário que deseja atualizar: ")
                                     args = (
-                                        id,
                                         input("Insira novo conteúdo: "),
+                                        input("Insira a nova data: "),
+                                        input("Insira a nova hora: "),
                                         input("Insira novo ID do usuário: "),
-                                        input("Insira novo ID do arquivo: ")
+                                        input("Insira novo ID do arquivo: "),
+                                        id
                                     )    
-                                    # cu.execute(Updates.updateComentario(*args))
+                                    cu.execute(Update.updateComentario(*args))
+                                    db.commit()
                                 case 4:
-                                    id = input("Informe o ID do comentário que deseja deletar: ")
-                                    # cu.execute("DELETE comentario WHERE id = comentario.id")
+                                    id = input("Informe o ID do usuário que deseja deletar: ")
+                                    confirmacao = input("Tem certeza que quer deletar o arquivo " + id + "? [S/N]: ")
+                                    if(confirmacao == 'S'):
+                                        cu.execute(Delete.deleteComentario())
+                                        db.commit()
+                                    else:
+                                        print("Operação cancelada! ")
 
                         #COMPARTILHAMENTO
                         case 10:
@@ -476,27 +535,33 @@ class Main:
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
-                                        input("Insira tipo de permissão: "),
-                                        # data_compartilhamento
                                         input("Insira ID do usuário origem: "),
+                                        input("Insira ID do arquivo: "),
                                         input("Insira ID do usuário destino: "),
-                                        input("Insira ID do arquivo: ")
+                                        input("Insira a data do compartilhamento: "),
                                     )    
-                                    # cu.execute(Inserts.newInsertCompartilhamento(*args))
+                                    cu.execute(Inserts.newInsertCompartilhamento(*args))
+                                    db.commit()
                                 case 3:
                                     id = input("Informe o ID do compartilhamento que deseja atualizar: ")
                                     args = (
-                                        id,
                                         input("Insira novo tipo de permissão: "),
+                                        input("Insira a nova data do compartilhamento: "),
                                         input("Insira novo ID do usuário origem: "),
                                         input("Insira novo ID do usuário destino: "),
-                                        input("Insira novo ID do arquivo: ")
+                                        input("Insira novo ID do arquivo: "),
+                                        id
                                     )    
-                                    # cu.execute(Updates.updateCompartilhamento(*args))
+                                    cu.execute(Update.updateCompartilhamento(*args))
+                                    db.commit()
                                 case 4:
                                     id = input("Informe o ID do compartilhamento que deseja deletar: ")
-                                    # cu.execute("DELETE compartilhamento WHERE id = compartilhamento.id")
-
+                                    confirmacao = input("Tem certeza que quer deletar o compartilhame " + id + "? [S/N]: ")
+                                    if(confirmacao == 'S'):
+                                        cu.execute(Delete.deleteAdministrador())
+                                        db.commit()
+                                    else:
+                                        print("Operação cancelada! ")
 
                         #ATIVIDADE RECENTE
                         case 11:
@@ -509,31 +574,31 @@ class Main:
                             match ans:
                                 case 1:
                                     cu.execute(Select.selectAtividades_recentes())
-                                    #cu.execute("SELECT * FROM atividade_recente")
                                     for linha in cu: print(linha)
                                 case 2:
                                     args = (
-                                        input("Insira tipo de atividade: "),
-                                        input("Insira descrição: "),
-                                        # data_atividade
-                                        input("Insira ID do usuário: "),
-                                        input("Insira ID do arquivo: ")
+                                        input("Insira ID do arquivo: "),
+                                        input("Insira a última versão: "),
+                                        input("Insira o tipo de acesso: ")
                                     )    
-                                    # cu.execute(Inserts.newInsertAtividade(*args))
+                                    cu.execute(Inserts.newInsertAtividade(*args))
+                                    db.commit()
                                 case 3:
-                                    id = input("Informe o ID da atividade que deseja atualizar: ")
+                                    id = input("Informe o ID do arquivo que deseja atualizar: ")
                                     args = (
-                                        id,
-                                        input("Insira novo tipo de atividade: "),
-                                        input("Insira nova descrição: "),
-                                        # data_atividade
-                                        input("Insira novo ID do usuário: "),
-                                        input("Insira novo ID do arquivo: ")
+                                        input("Insira a nova última versão: "),
+                                        input("Insira o novo tipo de acesso: "),
+                                        input("Insira o novo ID do arquivo: ")
                                     )    
-                                    # cu.execute(Updates.updateAtividade(*args))
+                                    cu.execute(Update.updateAtividade(*args))
+                                    db.commit()
                                 case 4:
                                     id = input("Informe o ID da atividade que deseja deletar: ")
-                                    # cu.execute("DELETE atividade_recente WHERE id = atividade_recente.id")
-
-                            db.commit()
-                            opcao = int(input("\nDeseja continuar?\n[0] Não\n[1] Sim\n"))
+                                    confirmacao = input("Tem certeza que quer deletar a atividade " + id + "? [S/N]: ")
+                                    if(confirmacao == 'S'):
+                                        cu.execute(Delete.deleteAtividadesRecentes())
+                                        db.commit()
+                                    else:
+                                        print("Operação cancelada! ")
+                    db.commit()
+                    opcao = int(input("\nDeseja continuar?\n[0] Não\n[1] Sim\n"))

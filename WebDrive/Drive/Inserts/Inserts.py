@@ -178,31 +178,31 @@ class Inserts:
         """
         return command
 
-    def newInsertUsuario(login,email,senha,data_ingresso,id_instituicao):
+    def newInsertUsuario(login, email, senha, data_ingresso, id_instituicao):
         command = f"""
             INSERT INTO usuario(login, email, senha, data_ingresso, id_instituicao)
-            VALUES('{login}','{email}','{senha}','{data_ingresso}', '{id_instituicao}')
+            VALUES('{login}', '{email}', '{senha}', '{data_ingresso}', '{id_instituicao}')
         """    
         return command
 
-    def newInsertAdministrador(login,email,senha,data_ingresso):
+    def newInsertAdministrador(login, email, senha, data_ingresso):
         command = f"""
-            INSERT INTO administrador(login,email,senha,data_ingresso)
-            VALUES('{login}','{email}','{senha}','{data_ingresso}')
+            INSERT INTO administrador(login, email, senha, data_ingresso)
+            VALUES('{login}', '{email}', '{senha}', '{data_ingresso}')
         """
         return command
     
-    def newInsertSuporta(dia,hora,descricao,id_usuario,id_administrador):
+    def newInsertSuporta(dia, hora, descricao, id_usuario, id_administrador):
         command = f"""
-            INSERT INTO suporta(dia,hora,descricao,id_usuario,id_administrador)
-            VALUES('{dia}','{hora}','{descricao}','{id_usuario}','{id_administrador}')
+            INSERT INTO suporta(dia, hora, descricao, id_usuario, id_administrador)
+            VALUES('{dia}', '{hora}', '{descricao}', '{id_usuario}', '{id_administrador}')
         """
         return command
     
     def newInsertArquivo(nome, tipo, URL, Permissoes_acesso, localizacao, tamanho, data_modificacao):
         command = f"""
             INSERT INTO arquivo(nome, tipo, URL, Permissoes_acesso, localizacao, tamanho, data_modificacao, id_usuario)
-            VALUES('{nome}','{tipo}','{URL}','{Permissoes_acesso}','{localizacao}','{tamanho}', '{data_modificacao}', 2)
+            VALUES('{nome}', '{tipo}', '{URL}', '{Permissoes_acesso}', '{localizacao}', '{tamanho}', '{data_modificacao}', 2)
         """
         return command
     
@@ -216,10 +216,9 @@ class Inserts:
     def newInsertHistorico(operacao, data_operacao, hora, conteudo_alterado, id_usuario, id_arquivo):
         command = f"""
             INSERT INTO historico(operacao, data_operacao, hora, conteudo_alterado, id_usuario, id_arquivo)
-            VALUES('{operacao}','{data_operacao}','{hora}','{conteudo_alterado}','{id_usuario}')
+            VALUES('{operacao}','{data_operacao}','{hora}','{conteudo_alterado}','{id_usuario}','{id_arquivo}')
         """
         return command
-
 
     def newInsertComentario(conteudo, data_comentario, hora, id_usuario, id_arquivo):
         command = f"""
