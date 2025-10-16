@@ -58,10 +58,3 @@ Crie uma tabela extra para controle de arquivos. A proposta é que arquivos que 
 Id_arquivo(FK) - id do arquivo que está sendo avaliado;  
 Ultima_versao – um atributo tipo date que registra a última data editada do arquivo;  
 Acesso – pode ser prioritário ou não prioritário.
-
-## **Integrantes**
-- Eduardo Braga
-- Henrique Franca
-- Isabela Medeiros
-- Júlia Vilela
-- Rafael Angelim
